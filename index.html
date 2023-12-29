@@ -7,63 +7,96 @@
     <title>Rock Paper Scissors</title>
   </head>
   <body>
+    <h1>Rock Paper Scissors</h1>
+    <div class="score">Player score: <span id="p-score">0</span></div>
+    <div class="score">Computer score: <span id="c-score">0</span></div>
+    
+    <button id="rock">Rock</button>
+    <button id="paper">Paper</button>
+    <button id="scissors">Scissors</button>
+
+    <button id="restart">Restart</button>
+
+    <div class="text">Select your choice. The game ends when either player has 5 points.</div>
+
     <script>
-        let playerSelection, computerSelection,p_s,c_s;
-        p_s=0;
-        c_s=0;
+        let playerSelection, computerSelection, p_s, c_s;
+        p_s = 0;
+        c_s = 0;
+
+        let p_score = document.querySelector('#p-score');
+        let c_score = document.querySelector('#c-score');
+        let text = document.querySelector('.text');
+        const restartButton = document.querySelector('#restart');
+
+        restartButton.addEventListener('click', () => {
+            p_s = 0;
+            c_s = 0;
+            p_score.innerText = '0';
+            c_score.innerText = '0';
+            text.innerText = 'Select your choice. The game ends when either player has 5 points.';
+        });
+
+        const btn1 = document.querySelector('#rock');
+        const btn2 = document.querySelector('#paper');
+        const btn3 = document.querySelector('#scissors');
+
+        btn1.addEventListener('click', () => {
+            playerSelection = 'rock';
+            playRound(playerSelection, getComputerChoice());
+        });
+
+        btn2.addEventListener('click', () => {
+            playerSelection = 'paper';
+            playRound(playerSelection, getComputerChoice());
+        });
+
+        btn3.addEventListener('click', () => {
+            playerSelection = 'scissors';
+            playRound(playerSelection, getComputerChoice());
+        });
 
         function getComputerChoice() {
             let r = Math.floor(Math.random() * 3) + 1;
-            let computerSelection;
-            if(r==1) computerSelection='rock';
-            else if(r==2) computerSelection='scissors';
-            else computerSelection='paper';
+            if (r == 1) computerSelection = 'rock';
+            else if (r == 2) computerSelection = 'scissors';
+            else computerSelection = 'paper';
             return computerSelection;
-        }      
-        
+        }
+
         function playRound(playerSelection, computerSelection) {
-            
+            text.innerText='Player choice: '+playerSelection+'\nComputer choice: '+computerSelection;
+            let result = winner(playerSelection, computerSelection);
+            update(result);
+        }
+
+        function winner(playerSelection, computerSelection) {
             if (playerSelection === computerSelection) {
-                return 'Tie';
+                return 0; // It's a tie
             } else if (
                 (playerSelection === 'rock' && computerSelection === 'scissors') ||
                 (playerSelection === 'scissors' && computerSelection === 'paper') ||
                 (playerSelection === 'paper' && computerSelection === 'rock')
             ) {
-                return 'Player wins';
+                return 1; // Player wins
             } else {
-                return 'Computer wins';
+                return 2; // Computer wins
             }
-
-            
-        } 
-        
-        function game(){
-            for(let i=0;i<5;i++){
-                
-                let playerSelection=window.prompt('Enter your choice');
-                playerSelection=playerSelection.toLowerCase();
-                let computerSelection=getComputerChoice();
-                let result= playRound(playerSelection,computerSelection);
-                if(result=='Player wins') p_s++;
-                else if(result=='Computer wins') c_s++;
-                else{
-                    i--;
-                    continue;
-                }
-                console.log('P score '+p_s);
-                console.log('C score '+c_s);
-
-            }
-            if(p_s>c_s) console.log('Player wins');
-            else console.log('Computer wins');
         }
 
-        game();
-        
-            
-        
-          
+        function update(result) {
+            if (result == 1) {
+                p_s++;
+                p_score.innerText = p_s;
+            } else if(result==2){
+                c_s++;
+                c_score.innerText = c_s;
+            }
+
+            if (p_s == 5 || c_s == 5) {
+                text.innerText = (p_s == 5) ? 'Player wins!!' : 'Computer wins!!';
+            }
+        }
     </script>
   </body>
 </html>
